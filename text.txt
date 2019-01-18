@@ -1,0 +1,4 @@
+User name,Password,Access key ID,Secret access key,Console login link
+anh.nguyentientuan,8(DrCay@F(n#,AKIAJYEYVVU6IX3G3WVQ,4eBTblMSqR+EQPCmVQeVJbEbpIWAEaYfxTr892iQ,https://555516925462.signin.aws.amazon.com/console
+cao.nguyenvan,w#L[!ZJ=z[+Y,AKIAJCHCAAMM2OY3IB6A,aaQHGIOyYx4qUXabeoXaExXCAZeTCWQQiaKnb4XF,https://555516925462.signin.aws.amazon.com/console
+chi.nguyenminh,xfs|PdvGkI3c,AKIAJ44KWLTSR75MVAUA,wsdCkvOUh6QuffMcycVVpqI39of2SrMrHCj2D0Pk,https://555516925462.signin.aws.amazon.com/console
