@@ -10,7 +10,7 @@ class Login extends React.Component {
     state = {
         accessTokenId: '',
         secretId: '',
-        isLoggined: false
+        isLoggined: true
     }
 
     onChangeHandle = (e) => {

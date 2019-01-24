@@ -1,12 +1,16 @@
 import React from 'react'
 import axios from 'axios'
-import {Env} from './env'
+import { Env } from './env'
+
+import Users from './Users'
+import ReactDOM from 'react-dom'
 
 class Instance extends React.Component {
 
     state = {
         state: this.props.State,
-        instanceId: this.props.InstanceId
+        instanceId: this.props.InstanceId,
+        openDialog: false
     }
 
     componentDidMount() {
@@ -25,15 +29,22 @@ class Instance extends React.Component {
             case 'far fa-trash-alt mr-3':
                 action = 'TERMINATE'
                 break;
+            case 'far fa-user':
+                action = 'USERS'
+                this.setState({ openDialog: true })
         }
         const params = {
             instanceIds: [this.state.instanceId],
             action,
             region: this.props.region
         }
-        const url = `${Env.URL2}/manageec2instance`
-        const res = await axios.post(url, params)
-        console.log('check', res.data)
+
+        let res = {}
+        if (action !== 'USERS') {
+            const url = `${Env.URL2}/manageec2instance`
+            res = await axios.post(url, params)
+        }
+
         if (res.data && res.data.StoppingInstances && res.data.StoppingInstances[0].CurrentState.Name) {
             console.log('check VAO ROI')
             this.setState({ state: res.data.StoppingInstances[0].CurrentState.Name }, () => {
@@ -73,7 +84,7 @@ class Instance extends React.Component {
 
                 }
             } else {
-                
+
                 return
             }
         }, 5000)
@@ -83,38 +94,80 @@ class Instance extends React.Component {
 
     render() {
         const { InstanceId, InstanceType, State, Order } = this.props
-        console.log('checkkkk',this.props)
+        console.log('checkkkk', this.props)
         return (
-            <tr >
-                <th scope="row">{Order}</th>
-                <td>{InstanceId}</td>
-                <td>{InstanceType}</td>
-                <td>{this.state.state}</td>
-                <td>
-                    {
-                        ['running', 'stopped', 'terminated'].indexOf(this.state.state) === -1 ? (
-                            <i className="fas fa-spinner"></i>
-                        ) : (
+            <React.Fragment>
+                <tr >
+                    <th scope="row">{Order}</th>
+                    <td>{InstanceId}</td>
+                    <td>{InstanceType}</td>
+                    <td>{this.state.state}</td>
+                    <td>
+                        {
+                            ['running', 'stopped', 'terminated'].indexOf(this.state.state) === -1 ? (
+                                <i className="fas fa-spinner"></i>
+                            ) : (
+                                    <React.Fragment>
+                                        {State === 'stopped' && (
+                                            <i onClick={this.onClickHandle} className="fa fa-play-circle mr-3"></i>
+                                        )}
+                                        {State === 'running' && (
+                                            <i onClick={this.onClickHandle} className="far fa-stop-circle mr-3"></i>
+                                        )}
+                                        {
+                                            State !== 'terminated' && (
+                                                <i onClick={this.onClickHandle} className="far fa-trash-alt mr-3"></i>
+                                            )
+                                        }
+
+                                        <button type="button" onClick={() => this.setState({ openDialog: this.props.InstanceId })} className="far fa-user" data-toggle="modal" data-target="#modal">
+                                        </button>
+                                    </React.Fragment>
+
+                                )
+                        }
+                    </td>
+                </tr>
+
+                
+                {
+                    ReactDOM.createPortal((
+                        <div className="modal fade" id="modal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div className="modal-dialog" role="document">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
+                                    <button type="button" onClick={() => this.setState({ openDialog: false })} className="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
                                 <React.Fragment>
-                                    {State === 'stopped' && (
-                                        <i onClick={this.onClickHandle} className="fa fa-play-circle mr-3"></i>
-                                    )}
-                                    {State === 'running' && (
-                                        <i onClick={this.onClickHandle} className="far fa-stop-circle mr-3"></i>
-                                    )}
                                     {
-                                        State !== 'terminated' && (
-                                            <i onClick={this.onClickHandle} className="far fa-trash-alt mr-3"></i>
+                                        this.state.openDialog && (
+                                            <Users instanceId={this.state.openDialog} ></Users>
                                         )
                                     }
                                 </React.Fragment>
+    
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary"
+                                        onClick={() => this.setState({ openDialog: false })} data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    ),document.getElementById('root'))
+                }
+               
 
-                            )
-                    }
 
 
-                </td>
-            </tr>
+
+
+        
+            </React.Fragment>
+
+
         )
     }
 
