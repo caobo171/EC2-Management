@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify'
 import { css } from '@emotion/core';
+import {Env} from './env'
 
 import ClipLoader from 'react-spinners/ClipLoader';
 
@@ -18,7 +19,7 @@ class Form extends React.Component {
 
     onClickHandler = async (e) => {
         e.preventDefault();
-        const url = `https://cihhhluyn3.execute-api.us-west-2.amazonaws.com/dev/createec2instance `
+        const url = `${Env.URL1}/createec2instance `
         const { KeyPairsList, ...params } = this.state
         console.log('check', params)
         this.setState({ loading: true }, () => console.log(this.state))
@@ -42,7 +43,7 @@ class Form extends React.Component {
 
     async componentDidMount() {
         console.log('checkkkk', this.props.region)
-        const url = `https://cihhhluyn3.execute-api.us-west-2.amazonaws.com/dev/listkeypairs`;
+        const url = `${Env.URL2}/listkeypairs`;
         const res = await axios.post(url,{region:this.props.region})
         console.log('checkk ', res)
         this.setState({ KeyPairsList: res.data, KeyName: res.data[0] ? res.data[0] : [] },

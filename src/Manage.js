@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import Form from './Form'
 import Instance from './Instance'
+import { Env } from './env'
 
 
 const REGIONS = [
@@ -33,7 +34,7 @@ class Manage extends React.Component {
     }
 
     getListInstace = async ()=>{
-        const url = `https://9flyfjl9hb.execute-api.us-west-2.amazonaws.com/dev/manageec2instance`
+        const url = `${Env.URL2}/manageec2instance`
         const res = await axios.post(url, { region: this.state.region })
         console.log('check RES ',res.data, this.state.region)
         if (res.data) {

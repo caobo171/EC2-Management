@@ -2,6 +2,7 @@ import React from 'react'
 import axios from 'axios'
 
 import Manage from './Manage'
+import { Env } from './env'
 
 
 class Login extends React.Component {
@@ -20,7 +21,7 @@ class Login extends React.Component {
         e.preventDefault()
         console.log('check', this.state)
 
-        const url = `https://9flyfjl9hb.execute-api.us-west-2.amazonaws.com/dev/checksecretkey `
+        const url = `${Env.URL2}/checksecretkey `
 
         const res = await axios.post(url, this.state)
         if (res.data === 'true' || res.data === true) {

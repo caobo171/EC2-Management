@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import {toast } from 'react-toastify'
+import {Env} from './env'
 
 class Instance extends React.Component {
 
@@ -31,7 +31,7 @@ class Instance extends React.Component {
             action,
             region: this.props.region
         }
-        const url = `https://9flyfjl9hb.execute-api.us-west-2.amazonaws.com/dev/manageec2instance`
+        const url = `${Env.URL2}/manageec2instance`
         const res = await axios.post(url, params)
         console.log('check', res.data)
         if (res.data && res.data.StoppingInstances && res.data.StoppingInstances[0].CurrentState.Name) {
@@ -59,7 +59,7 @@ class Instance extends React.Component {
 
         await setTimeout(async () => {
             if (state !== 'stopped' && state !== 'terminated' && state !== 'running') {
-                const url = `https://9flyfjl9hb.execute-api.us-west-2.amazonaws.com/dev/manageec2instance`
+                const url = `${Env.URL2}/manageec2instance`
                 const res = await axios.post(url, {
                     instanceIds: [this.state.instanceId],
                     region: this.props.region
