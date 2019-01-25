@@ -3,6 +3,9 @@ import axios from 'axios'
 import Form from './Form'
 import Instance from './Instance'
 import { Env } from './env'
+import selectContainer from './containers/selectContainer'
+
+import EC2Instances from './fakedata'
 
 
 const REGIONS = [
@@ -10,33 +13,22 @@ const REGIONS = [
     "ap-northeast-1"
 ]
 
-const MAP = {
-    "ap-northeast-1":[
-        "ami-00a5245b4816c38e6",
-        "ami-0bab560bf1ee352f5"
-    ],
-    "us-west-2":[
-        "ami-7172b611",
-        "ami-83b770e3"
-    ]
-}
 class Manage extends React.Component {
 
 
     state = {
         ec2InstancesList: [],
-        region: 'us-west-2',
-        startForm: false
+        region: 'us-west-2'
     }
     async componentDidMount() {
 
         await this.getListInstace()
     }
 
-    getListInstace = async ()=>{
+    getListInstace = async (region) => {
         const url = `${Env.URL2}/manageec2instance`
-        const res = await axios.post(url, { region: this.state.region })
-        console.log('check RES ',res.data, this.state.region)
+        const res = await axios.post(url, { region })
+        console.log('check RES ', res.data, this.state.region)
         if (res.data) {
             this.setState({ ec2InstancesList: res.data })
         }
@@ -44,9 +36,8 @@ class Manage extends React.Component {
 
     onChangeRegionHandle = (e) => {
         //console.log('check CLICCKK')
-        this.setState({ [e.target.name]: e.target.value }, async () => {
-
-            await this.getListInstace()
+        selectContainer.setState({ region: e.target.value }, async () => {
+            await this.getListInstace(selectContainer.state.region)
         })
     }
     render() {
@@ -59,7 +50,7 @@ class Manage extends React.Component {
             <br></br>
             <div className="form-group">
                 <label>Regions </label>
-                <select className="form-control" name='region' id="exampleFormControlSelect1" value={this.state.region} onChange={this.onChangeRegionHandle}>
+                <select className="form-control" name='region' id="exampleFormControlSelect1" value={selectContainer.state.region} onChange={this.onChangeRegionHandle}>
                     {
                         REGIONS.map(e => (
                             <option key={e} value={e}>{e}</option>
@@ -75,22 +66,17 @@ class Manage extends React.Component {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
-                            <button type="button" onClick={() => this.setState({ startForm: false })} className="close" data-dismiss="modal" aria-label="Close">
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <React.Fragment>
-                            {
-                                this.state.startForm && (
-                                    <Form region={this.state.region} imaids={MAP[this.state.region]} onCompleted={()=>this.getListInstace()}></Form>
-                                    
-                                )
-                            }
-                        </React.Fragment>
+
+                        <Form  onCompleted={(region) => this.getListInstace(region)}></Form>
+
 
                         <div className="modal-footer">
                             <button type="button" className="btn btn-secondary"
-                                onClick={() => this.setState({ startForm: false })} data-dismiss="modal">Close</button>
+                             data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -109,14 +95,15 @@ class Manage extends React.Component {
                 </thead>
                 <tbody>
                     <React.Fragment>
-                        {this.state.ec2InstancesList.map((e, index) => (
-                            <Instance key={e[0].InstanceId}
+                        {EC2Instances.map((e, index) => (
+                            <Instance key={e.InstanceId}
                                 region={this.state.region}
-                                InstanceId={e[0].InstanceId}
-                                InstanceType={e[0].InstanceType}
-                                State={e[0].State}
+                                InstanceId={e.InstanceId}
+                                InstanceType={e.InstanceType}
+                                State={e.State}
                                 Order={index + 1}
-                            ></Instance>                            
+                                instance = {e}
+                            ></Instance>
                         ))}
                     </React.Fragment>
 

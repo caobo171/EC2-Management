@@ -4,17 +4,23 @@ import { Env } from './env'
 
 import Users from './Users'
 import ReactDOM from 'react-dom'
+import selectContainer from './containers/selectContainer'
 
 class Instance extends React.Component {
 
     state = {
         state: this.props.State,
-        instanceId: this.props.InstanceId,
-        openDialog: false
+        instanceId: this.props.InstanceId
     }
 
     componentDidMount() {
         this.recurseToSetState(this.state.state)
+    }
+
+
+    onClickUserHandle= ()=>{
+        ///* load users here
+        selectContainer.setState({ instance: this.props.instance })
     }
 
     onClickHandle = async (e) => {
@@ -29,9 +35,7 @@ class Instance extends React.Component {
             case 'far fa-trash-alt mr-3':
                 action = 'TERMINATE'
                 break;
-            case 'far fa-user':
-                action = 'USERS'
-                this.setState({ openDialog: true })
+
         }
         const params = {
             instanceIds: [this.state.instanceId],
@@ -39,11 +43,10 @@ class Instance extends React.Component {
             region: this.props.region
         }
 
-        let res = {}
-        if (action !== 'USERS') {
-            const url = `${Env.URL2}/manageec2instance`
-            res = await axios.post(url, params)
-        }
+
+        const url = `${Env.URL2}/manageec2instance`
+        const res = await axios.post(url, params)
+
 
         if (res.data && res.data.StoppingInstances && res.data.StoppingInstances[0].CurrentState.Name) {
             console.log('check VAO ROI')
@@ -119,8 +122,9 @@ class Instance extends React.Component {
                                                 <i onClick={this.onClickHandle} className="far fa-trash-alt mr-3"></i>
                                             )
                                         }
-
-                                        <button type="button" onClick={() => this.setState({ openDialog: this.props.InstanceId })} className="far fa-user" data-toggle="modal" data-target="#modal">
+                                        <button type="button"
+                                            onClick={this.onClickUserHandle}
+                                            class="far fa-user" data-toggle="modal" data-target="#exampleModal1">
                                         </button>
                                     </React.Fragment>
 
@@ -129,42 +133,39 @@ class Instance extends React.Component {
                     </td>
                 </tr>
 
-                
+
                 {
                     ReactDOM.createPortal((
-                        <div className="modal fade" id="modal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div className="modal-dialog" role="document">
-                            <div className="modal-content">
-                                <div className="modal-header">
-                                    <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
-                                    <button type="button" onClick={() => this.setState({ openDialog: false })} className="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <React.Fragment>
-                                    {
-                                        this.state.openDialog && (
-                                            <Users instanceId={this.state.openDialog} ></Users>
-                                        )
-                                    }
-                                </React.Fragment>
-    
-                                <div className="modal-footer">
-                                    <button type="button" className="btn btn-secondary"
-                                        onClick={() => this.setState({ openDialog: false })} data-dismiss="modal">Close</button>
+
+
+                        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <Users></Users>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    ),document.getElementById('root'))
+                    ), document.getElementById('root'))
                 }
-               
 
 
 
 
 
-        
+
+
             </React.Fragment>
 
 

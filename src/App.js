@@ -3,10 +3,13 @@ import Login from './Login'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import {Provider} from 'unstated-x'
+
 class App extends Component {
   render() {
     return (
-      <div className="container">
+      <Provider>
+        <div className="container">
         <Login></Login>
         <ToastContainer
           position="top-right"
@@ -22,6 +25,8 @@ class App extends Component {
         {/* Same as */}
         <ToastContainer />
       </div>
+      </Provider>
+
     );
   }
 }
