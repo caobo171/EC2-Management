@@ -21,8 +21,16 @@ class Manage extends React.Component {
         region: 'us-west-2'
     }
     async componentDidMount() {
+        selectContainer.setState({ region: REGIONS[0] }, async () => {
+            await this.getListInstace(selectContainer.state.region)
+            const url = `${Env.URL1}/listkeypairs`;
+            console.log('checkkk before', selectContainer.state.region )
+            const res = await axios.post(url, { region: selectContainer.state.region })
+            console.log('checkkk after', res.data )
+    
+            selectContainer.setState({ KeyPairsList: res.data })
+        })
 
-        await this.getListInstace()
     }
 
     getListInstace = async (region) => {
@@ -30,6 +38,7 @@ class Manage extends React.Component {
         const res = await axios.post(url, { region })
         console.log('check RES ', res.data, this.state.region)
         if (res.data) {
+            console.log('check res',res.data)
             this.setState({ ec2InstancesList: res.data })
         }
     }
@@ -38,6 +47,11 @@ class Manage extends React.Component {
         //console.log('check CLICCKK')
         selectContainer.setState({ region: e.target.value }, async () => {
             await this.getListInstace(selectContainer.state.region)
+
+            const url = `${Env.URL1}/listkeypairs`;
+            const res = await axios.post(url, { region: selectContainer.state.region })
+    
+            selectContainer.setState({ KeyPairsList: res.data })
         })
     }
     render() {
@@ -50,7 +64,7 @@ class Manage extends React.Component {
             <br></br>
             <div className="form-group">
                 <label>Regions </label>
-                <select className="form-control" name='region' id="exampleFormControlSelect1" value={selectContainer.state.region} onChange={this.onChangeRegionHandle}>
+                <select className="form-control" name='region' id="exampleFormControlSelect1" onChange={this.onChangeRegionHandle}>
                     {
                         REGIONS.map(e => (
                             <option key={e} value={e}>{e}</option>
@@ -95,7 +109,7 @@ class Manage extends React.Component {
                 </thead>
                 <tbody>
                     <React.Fragment>
-                        {EC2Instances.map((e, index) => (
+                        {this.state.ec2InstancesList.map(e=>e[0]).map((e, index) => (
                             <Instance key={e.InstanceId}
                                 region={this.state.region}
                                 InstanceId={e.InstanceId}

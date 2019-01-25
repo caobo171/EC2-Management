@@ -27,8 +27,7 @@ class Login extends React.Component {
         if (res.data === 'true' || res.data === true) {
             this.setState({ isLoggined: true })
         }
-        //console.log('check',data)
-        //e.preventDefault()
+
     }
     render() {
         return (

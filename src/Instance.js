@@ -19,8 +19,16 @@ class Instance extends React.Component {
 
 
     onClickUserHandle= ()=>{
-        ///* load users here
         selectContainer.setState({ instance: this.props.instance })
+    }
+
+    onClickCheck = async ()=>{
+       const data = await axios.post(`${Env.URL1}/manageuserec2 `,{
+            host:'34.220.226.48'
+        })
+
+        window.data = data;
+        console.log('check ',data)
     }
 
     onClickHandle = async (e) => {
@@ -79,7 +87,8 @@ class Instance extends React.Component {
                     region: this.props.region
                 })
                 console.log('check STATE ', res.data)
-                if (res.data) {
+                if (res.data && !res.data.errorMessage) {
+                    console.log('check ress ',res.data)
                     this.setState({ state: res.data[0][0].State }, () => {
                         console.log('check STATE setimetou')
                         this.recurseToSetState(this.state.state)
@@ -97,7 +106,6 @@ class Instance extends React.Component {
 
     render() {
         const { InstanceId, InstanceType, State, Order } = this.props
-        console.log('checkkkk', this.props)
         return (
             <React.Fragment>
                 <tr >
@@ -124,7 +132,10 @@ class Instance extends React.Component {
                                         }
                                         <button type="button"
                                             onClick={this.onClickUserHandle}
-                                            class="far fa-user" data-toggle="modal" data-target="#exampleModal1">
+                                            className="far fa-user" data-toggle="modal" data-target="#exampleModal1">
+                                        </button>
+                                        <button onClick={this.onClickCheck}>
+                                            checkkk
                                         </button>
                                     </React.Fragment>
 
@@ -138,21 +149,21 @@ class Instance extends React.Component {
                     ReactDOM.createPortal((
 
 
-                        <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <div className="modal fade" id="exampleModal1" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div className="modal-dialog" role="document">
+                                <div className="modal-content">
+                                    <div className="modal-header">
+                                        <h5 className="modal-title" id="exampleModalLabel">Modal title</h5>
+                                        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div className="modal-body">
                                         <Users></Users>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
+                                    <div className="modal-footer">
+                                        <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="button" className="btn btn-primary">Save changes</button>
                                     </div>
                                 </div>
                             </div>
