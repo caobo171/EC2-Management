@@ -19,7 +19,19 @@ class Instance extends React.Component {
 
 
     onClickUserHandle= ()=>{
-        selectContainer.setState({ instance: this.props.instance })
+        selectContainer.setState({ instance: this.props.instance },async ()=>{
+            const res = await axios.post(`${Env.URL1}/manageuserec2 `,{
+                host:'34.220.226.48'
+            })
+            
+            let array = res.data.split('\n')
+            array.pop()
+            array.splice(0,array.indexOf('ec2-user')+1)
+            let instance = selectContainer.state.instance
+            instance.users = array
+            selectContainer.setState({instance})
+            
+        })
     }
 
     onClickCheck = async ()=>{

@@ -1,14 +1,14 @@
 import React from 'react'
 import { SubscribeOne } from 'unstated-x'
 import selectContainer from './containers/selectContainer';
-
+import ClipLoader from 'react-spinners/ClipLoader';
 class Users extends React.Component {
 
-    componentDidUpdate(prevProps,prevState){
-        console.log('check',prevProps,prevState)
+    componentDidUpdate(prevProps, prevState) {
+        console.log('check', prevProps, prevState)
     }
 
-    componentDidMount(){
+    componentDidMount() {
         console.log('checkkkk')
     }
     render() {
@@ -23,8 +23,8 @@ class Users extends React.Component {
                         return (
                             <React.Fragment>
                                 {
-                                    slContainer.state.instance && (
-                                        <table class="table container">
+                                    (slContainer.state.instance && slContainer.state.instance.users)?(
+                                        <table className="table container">
                                             <thead>
                                                 <tr>
                                                     <th scope="col">#</th>
@@ -33,28 +33,23 @@ class Users extends React.Component {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <th scope="row">1</th>
-                                                    <td>Mark</td>
-                                                    <td>Otto</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">2</th>
-                                                    <td>Jacob</td>
-                                                    <td>Thornton</td>
-                                                </tr>
-                                                <tr>
-                                                    <th scope="row">3</th>
-                                                    <td>Larry</td>
-                                                    <td>the Bird</td>
-                                                </tr>
-                                                <tr>
-                                                    <th><button>addusers</button></th>
-                                                    <td><input type="text" placeholder="username"></input></td>
-                                                    <td><input type="text" placeholder="password"></input></td>
-                                                </tr>
+                                                {
+                                                    slContainer.state.instance.users.map((e,index) => {
+                                                        console.log('check ', e)
+                                                        return (
+                                                            <tr key={e}>
+                                                                <th scope="row">{index+1}</th>
+                                                                <td>{e}</td>
+                                                                <td>********</td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+
                                             </tbody>
                                         </table>
+                                    ):(
+                                        <ClipLoader></ClipLoader>
                                     )
                                 }
                             </React.Fragment>
