@@ -23,70 +23,83 @@ class Form extends React.Component {
 
     onClickHandler = async (e) => {
         e.preventDefault();
-        const url = `${Env.URL1}/createcloudformation `
+        // const url = `${Env.URL1}/createcloudformation `
         this.setState({ loading: true })
 
-        let template = {
-            "AWSTemplateFormatVersion": "2010-09-09",
-            "Description": "AWS CloudFormation Sample Template",
-            "Mappings": Maps,
-            "Resources": {
-            },
-            "Outputs": {
-                "InstanceId": {
-                    "Description": "InstanceId of the newly created EC2 instance",
-                    "Value": { "Ref": this.state.name }
-                }
-            }
-        }
+        // let template = {
+        //     "AWSTemplateFormatVersion": "2010-09-09",
+        //     "Description": "AWS CloudFormation Sample Template",
+        //     "Mappings": Maps,
+        //     "Resources": {
+        //     },
+        //     "Outputs": {
+        //         "InstanceId": {
+        //             "Description": "InstanceId of the newly created EC2 instance",
+        //             "Value": { "Ref": this.state.name }
+        //         }
+        //     }
+        // }
 
-        template.Resources[this.state.name] = {
-            "Type": "AWS::EC2::Instance",
-            "Properties": {
-                "InstanceType": this.state.InstanceType,
-                "ImageId": {
-                    "Fn::FindInMap": ["AWSRegionArch2AMI", { "Ref": "AWS::Region" },
-                        { "Fn::FindInMap": ["AWSInstanceType2Arch", this.state.InstanceType, "Arch"] }]
-                },
-                "KeyName": this.state.KeyName,
-                "UserData": {
-                    "Fn::Base64": {
-                        "Fn::Join": ["", [
-                            `#!/bin/bash\n`,
-                            `sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config\n`,
-                            `service sshd reload\n`,
-                            `password="tuilacao171"\n`,
-                            `pass=$(perl -e 'print crypt($ARGV[0], "password")' $password)\n`,
-                            `useradd -m -p $pass cao171\n`,
-                            `sed -i 's/Allows people in group wheel to run all commands/Allows people in group wheel to run all commands \\n cao171   ALL=(ALL)  NOPASSWD:ALL/g' /etc/sudoers\n`
-                        ]]
-                    }
-                },
-                "Tags": [
-                    {
-                        Key: "owner",
-                        Value: this.state.owner
-                    },
-                    {
-                        Key: "Name",
-                        Value: this.state.name
-                    },
-                    {
-                        Key: "department",
-                        Value: this.state.department
-                    }
-                ]
+        // template.Resources[this.state.name] = {
+        //     "Type": "AWS::EC2::Instance",
+        //     "Properties": {
+        //         "InstanceType": this.state.InstanceType,
+        //         "ImageId": {
+        //             "Fn::FindInMap": ["AWSRegionArch2AMI", { "Ref": "AWS::Region" },
+        //                 { "Fn::FindInMap": ["AWSInstanceType2Arch", this.state.InstanceType, "Arch"] }]
+        //         },
+        //         "KeyName": this.state.KeyName,
+        //         "UserData": {
+        //             "Fn::Base64": {
+        //                 "Fn::Join": ["", [
+        //                     `#!/bin/bash\n`,
+        //                     `sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config\n`,
+        //                     `service sshd reload\n`,
+        //                     `password="tuilacao171"\n`,
+        //                     `pass=$(perl -e 'print crypt($ARGV[0], "password")' $password)\n`,
+        //                     `useradd -m -p $pass cao171\n`,
+        //                     `sed -i 's/Allows people in group wheel to run all commands/Allows people in group wheel to run all commands \\n cao171   ALL=(ALL)  NOPASSWD:ALL/g' /etc/sudoers\n`
+        //                 ]]
+        //             }
+        //         },
+        //         "Tags": [
+        //             {
+        //                 Key: "owner",
+        //                 Value: this.state.owner
+        //             },
+        //             {
+        //                 Key: "Name",
+        //                 Value: this.state.name
+        //             },
+        //             {
+        //                 Key: "department",
+        //                 Value: this.state.department
+        //             }
+        //         ]
 
-            }
-        }
+        //     }
+        // }
 
-        const params = {
-            StackName: this.state.name,
-            TemplateBody: JSON.stringify(template)
-        }
+        // const params = {
+        //     StackName: this.state.name,
+        //     TemplateBody: JSON.stringify(template)
+        // }
           
-        console.log('params',JSON.stringify(template))
-        const res = await axios.post(url, { ...params, region: this.props.region })
+        // console.log('params',JSON.stringify(template))
+        // const res = await axios.post(url, { ...params, region: this.props.region })
+
+
+        const url = `${Env.URL1}/createec2instance`
+        const params = {
+            InstanceType:this.state.InstanceType,
+            ImageId:Maps.AWSRegionArch2AMI[selectContainer.state.region][this.state.ImageId],
+            name:this.state.name,
+            department:this.state.department,
+            owner:this.state.owner,
+            region:selectContainer.state.region
+        }
+        console.log('check ',params)
+        const res = await axios.post(url,params)
 
         if (res.data.errorMessage) {
             console.log(res)

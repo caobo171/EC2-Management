@@ -18,30 +18,23 @@ class Instance extends React.Component {
     }
 
 
-    onClickUserHandle= ()=>{
-        selectContainer.setState({ instance: this.props.instance },async ()=>{
-            const res = await axios.post(`${Env.URL1}/manageuserec2 `,{
-                host:'34.220.226.48'
+    onClickUserHandle = () => {
+    
+        selectContainer.setState({ instance: this.props.instance }, async () => {
+            const res = await axios.post(`${Env.URL1}/manageuserec2 `, {
+                host: this.props.instance.Host
             })
-            
+
             let array = res.data.split('\n')
             array.pop()
-            array.splice(0,array.indexOf('ec2-user')+1)
+            array.splice(0, array.indexOf('ec2-user') + 2)
             let instance = selectContainer.state.instance
             instance.users = array
-            selectContainer.setState({instance})
-            
+            selectContainer.setState({ instance })
+
         })
     }
 
-    onClickCheck = async ()=>{
-       const data = await axios.post(`${Env.URL1}/manageuserec2 `,{
-            host:'34.220.226.48'
-        })
-
-        window.data = data;
-        console.log('check ',data)
-    }
 
     onClickHandle = async (e) => {
         let action = null;
@@ -69,21 +62,21 @@ class Instance extends React.Component {
 
 
         if (res.data && res.data.StoppingInstances && res.data.StoppingInstances[0].CurrentState.Name) {
-            console.log('check VAO ROI')
+
             this.setState({ state: res.data.StoppingInstances[0].CurrentState.Name }, () => {
-                console.log('check -------- AAAA', this.state.state)
+    
                 this.recurseToSetState(this.state.state)
             })
         } else if (res.data && res.data.StartingInstances && res.data.StartingInstances[0].CurrentState.Name) {
-            console.log('check VAO ROI')
+   
             this.setState({ state: res.data.StartingInstances[0].CurrentState.Name }, () => {
-                console.log('check -------- AAAA', this.state.state)
+      
                 this.recurseToSetState(this.state.state)
             })
         } else if (res.data && res.data.TerminatingInstances && res.data.TerminatingInstances[0].CurrentState.Name) {
-            console.log('check VAO ROI')
+
             this.setState({ state: res.data.TerminatingInstances[0].CurrentState.Name }, () => {
-                console.log('check -------- AAAA', this.state.state)
+
                 this.recurseToSetState(this.state.state)
             })
         }
@@ -100,7 +93,7 @@ class Instance extends React.Component {
                 })
                 console.log('check STATE ', res.data)
                 if (res.data && !res.data.errorMessage) {
-                    console.log('check ress ',res.data)
+                    console.log('check ress ', res.data)
                     this.setState({ state: res.data[0][0].State }, () => {
                         console.log('check STATE setimetou')
                         this.recurseToSetState(this.state.state)
@@ -134,21 +127,22 @@ class Instance extends React.Component {
                                         {State === 'stopped' && (
                                             <i onClick={this.onClickHandle} className="fa fa-play-circle mr-3"></i>
                                         )}
-                                        {State === 'running' && (
-                                            <i onClick={this.onClickHandle} className="far fa-stop-circle mr-3"></i>
-                                        )}
+
                                         {
                                             State !== 'terminated' && (
                                                 <i onClick={this.onClickHandle} className="far fa-trash-alt mr-3"></i>
                                             )
                                         }
-                                        <button type="button"
-                                            onClick={this.onClickUserHandle}
-                                            className="far fa-user" data-toggle="modal" data-target="#exampleModal1">
-                                        </button>
-                                        <button onClick={this.onClickCheck}>
-                                            checkkk
-                                        </button>
+                                        {this.state.state === 'running' && (
+                                            <React.Fragment>
+                                                <i onClick={this.onClickHandle} className="far fa-stop-circle mr-3"></i>
+                                                <button type="button"
+                                                    onClick={this.onClickUserHandle}
+                                                    className="far fa-user" data-toggle="modal" data-target="#exampleModal1">
+                                                </button>
+                                            </React.Fragment>
+                                        )}
+
                                     </React.Fragment>
 
                                 )
