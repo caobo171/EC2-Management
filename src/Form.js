@@ -92,7 +92,8 @@ class Form extends React.Component {
         const url = `${Env.URL1}/createec2instance`
         const params = {
             InstanceType:this.state.InstanceType,
-            ImageId:Maps.AWSRegionArch2AMI[selectContainer.state.region][this.state.ImageId],
+            // ImageId:Maps.AWSRegionArch2AMI[selectContainer.state.region][this.state.ImageId],
+            ImageId: selectContainer.state.region === 'us-west-2' ? 'ami-032509850cf9ee54e':'ami-0d7ed3ddb85b521a6' ,
             name:this.state.name,
             department:this.state.department,
             owner:this.state.owner,
@@ -108,7 +109,7 @@ class Form extends React.Component {
         } else {
             toast.success('create EC2 successfully! ')
             console.log('check res',res.data)
-            //this.props.onCompleted(selectContainer.state.region)
+            this.props.onCompleted(selectContainer.state.region)
         }
 
         await this.setState({ loading: false }, () => console.log(this.state))

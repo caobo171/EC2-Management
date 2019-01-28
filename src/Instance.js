@@ -10,7 +10,8 @@ class Instance extends React.Component {
 
     state = {
         state: this.props.State,
-        instanceId: this.props.InstanceId
+        instanceId: this.props.InstanceId,
+        test:''
     }
 
     componentDidMount() {
@@ -24,6 +25,9 @@ class Instance extends React.Component {
             const res = await axios.post(`${Env.URL1}/manageuserec2 `, {
                 host: this.props.instance.Host
             })
+
+
+            console.log('check res',res, this.props.instance.Host)
 
             let array = res.data.split('\n')
             array.pop()
@@ -109,15 +113,22 @@ class Instance extends React.Component {
 
     }
 
+
+    onChannnnageHandle = (e)=>{
+        this.setState({[e.target.name]:e.target.value},()=>{
+            console.log('check this props',this.props.InstanceId)
+        })
+    }
     render() {
         const { InstanceId, InstanceType, State, Order } = this.props
         return (
             <React.Fragment>
                 <tr >
-                    <th scope="row">{Order}</th>
+                    <th scope="row"><input name="test" onChange={this.onChannnnageHandle} value={this.state.test}></input></th>
                     <td>{InstanceId}</td>
                     <td>{InstanceType}</td>
                     <td>{this.state.state}</td>
+                    
                     <td>
                         {
                             ['running', 'stopped', 'terminated'].indexOf(this.state.state) === -1 ? (
