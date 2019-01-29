@@ -20,25 +20,37 @@ class Users extends React.Component {
     }
 
     onClickHandle = async (e) => {
-        //console.log('check clieck',this.state)
-        this.setState({ loading: true })
-        const res = await axios.post(`${Env.URL1}/manageuserec2 `, {
-            username: this.state.username,
-            password: this.state.password,
-            host: selectContainer.state.instance.Host
-        })
+        // //console.log('check clieck',this.state)
+        // this.setState({ loading: true })
+        // const res = await axios.post(`${Env.URL1}/manageuserec2 `, {
+        //     username: this.state.username,
+        //     password: this.state.password,
+        //     host: selectContainer.state.instance.Host
+        // })
 
-        console.log('check ,ress', res)
+        // console.log('check ,ress', res)
 
-        this.setState({ username: '', password: '' })
-        let array = res.data.split('\n')
-        array.pop()
-        array.splice(0, array.indexOf('ec2-user') + 2)
-        let instance = selectContainer.state.instance
-        instance.users = array
-        selectContainer.setState({ instance }, () => {
-            this.setState({ loading: false })
-        })
+        // this.setState({ username: '', password: '' })
+        // let array = res.data.split('\n')
+        // array.pop()
+        // array.splice(0, array.indexOf('ec2-user') + 2)
+        // let instance = selectContainer.state.instance
+        // instance.users = array
+        // selectContainer.setState({ instance }, () => {
+        //     this.setState({ loading: false })
+        // })
+         function downloadObjectAsJson(exportObj, exportName) {
+            const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(exportObj))
+            const downloadAnchorNode = document.createElement('a')
+            downloadAnchorNode.setAttribute('href', dataStr)
+            downloadAnchorNode.setAttribute('download', exportName + '.json')
+            const e = document.createEvent('MouseEvents')
+            e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null)
+            downloadAnchorNode.dispatchEvent(e)
+            downloadAnchorNode.remove()
+        }
+
+        downloadObjectAsJson({linhtinh:'cao'}, 'caobo171')
     }
 
     onResetHandle = async (e) => {

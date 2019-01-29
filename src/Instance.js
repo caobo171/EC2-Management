@@ -124,7 +124,7 @@ class Instance extends React.Component {
         return (
             <React.Fragment>
                 <tr >
-                    <th scope="row"><input name="test" onChange={this.onChannnnageHandle} value={this.state.test}></input></th>
+                    <th scope="row">{Order}</th>
                     <td>{InstanceId}</td>
                     <td>{InstanceType}</td>
                     <td>{this.state.state}</td>

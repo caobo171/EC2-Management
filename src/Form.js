@@ -97,7 +97,8 @@ class Form extends React.Component {
             name:this.state.name,
             department:this.state.department,
             owner:this.state.owner,
-            region:selectContainer.state.region
+            region:selectContainer.state.region,
+            KeyName: this.state.KeyName
         }
         console.log('check ',params)
         const res = await axios.post(url,params)
